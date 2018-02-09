@@ -1,3 +1,4 @@
+package src;
 import java.nio.file.*;
 import java.io.*;
 import java.nio.*;
@@ -6,7 +7,7 @@ import java.lang.*;
 
 /**
  * This program encodes a file given and decodes a compressed file as well.
- * Uses the huffman algorithm.
+ * Uses the Huffman algorithm.
  * 
  * @author Grant Zukowski
  * @version 1.1
