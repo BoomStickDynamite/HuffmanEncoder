@@ -35,7 +35,7 @@ public class HuffmanEncode
      */
     public HuffmanEncode(File input)
     {
-        // initialise instance variables
+        // initialize instance variables
         theFile = input;
     }
     
@@ -49,8 +49,8 @@ public class HuffmanEncode
     
     /**
      * Reads the filename and creates a File Object which will be used in a FileInputStream.
-     * *** might need to do something here, the file was marked as thefile and I changed it to
-     * *** theFile and it had no effect which worries me.
+     * might need to do something here, the file was marked as thefile and I changed it to
+     * theFile and it had no effect which worries me.
      * @throws FileNotFoundException
      */
     public void encodeByteStream() throws FileNotFoundException
