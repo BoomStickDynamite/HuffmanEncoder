@@ -20,7 +20,6 @@ public class HuffmanTest {
         File testFile = new File("foxtext.txt");
         HuffmanEncode huffy = new HuffmanEncode(testFile);
         huffy.encode();
-        //HuffmanEncode huffy = new HuffmanEncode(testFile);
         huffy.writeToFile(testString);
     }
 }

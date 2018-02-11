@@ -14,9 +14,10 @@ import java.lang.*;
  */
 public class HuffmanEncode
 {
-    // instance variables - replace the example below with your own
+    // instance variables
     File theFile;
     File compressedFile = new File("foxtext.hzip");
+    String stringInput;
     ArrayList<Character> characters = new ArrayList<Character>();
     PriorityQueue<CharNode> nodeQueue = new PriorityQueue<CharNode>();
     PriorityQueue<ByteNode> nodeByteQueue = new PriorityQueue<ByteNode>();
@@ -25,18 +26,18 @@ public class HuffmanEncode
     CharNode overallRoot;
     ByteNode overallByteRoot;
     String traverser = "";
-    String stringInput;
+    
     ArrayList<Integer> byteArray = new ArrayList<Integer>();
     HashMap<Integer, Integer> myFirstMap = new HashMap<Integer, Integer>();
     HashMap<Integer, String> encodedBytesMap = new HashMap<Integer, String>();
     
     /**
-     * Constructor for objects of class HuffmanEncode
+     * Constructor for objects of class HuffmanEncode to start with a file
      */
     public HuffmanEncode(File input)
     {
         // initialize instance variables
-        theFile = input;
+        this.theFile = input;
     }
     
     /** Overloaded Constructor for String input
@@ -44,7 +45,7 @@ public class HuffmanEncode
      */
     public HuffmanEncode (String fileName)
     {
-        stringInput = fileName;
+        this.stringInput = fileName;
     }
     
     /**
@@ -105,15 +106,15 @@ public class HuffmanEncode
         //encodedBytesMap.forEach((k,v) -> System.out.println(k + "=" + v));
         
         //write the huffcode tree bytes to file
-        long numberOfBytes;
-        int numberOfSymbols;
+        
+        
         
         // set number of bytes to the file length of bytes
-        numberOfBytes = theFile.length();
+        long numberOfBytes = theFile.length();
         
  
         //System.out.println(wrapperNumberOfBytes.BYTES);
-        numberOfSymbols = myFirstMap.size();
+        int numberOfSymbols = myFirstMap.size();
 
         //System.out.println(wrapperNumberOfBytes);
         //System.out.println(numberOfSymbols);
