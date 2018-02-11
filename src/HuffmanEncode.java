@@ -1,9 +1,9 @@
 package src;
-import java.nio.file.*;
+
 import java.io.*;
 import java.nio.*;
 import java.util.*;
-import java.lang.*;
+
 
 /**
  * This program encodes a file given and decodes a compressed file as well.
@@ -36,7 +36,6 @@ public class HuffmanEncode
      */
     public HuffmanEncode(File input)
     {
-        // initialize instance variables
         this.theFile = input;
     }
     
@@ -189,8 +188,13 @@ public class HuffmanEncode
                         //System.out.println(currentData);
                         //System.out.println(Integer.toBinaryString(inputStream.read()));
                     	String huffCode = encodedBytesMap.get(inputData);
-                //|-----------------This is where you left off.  Going to put the bits
+                    	
+                    	
+                    	
+                    	//|-----------------This is where you left off.  Going to put the bits
                     	// for each code next to each other ----------|
+                    	
+                    	
                     	
                     	//headerByteStream.write();
                     } 
