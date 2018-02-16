@@ -203,8 +203,10 @@ public class HuffmanEncode
                     System.out.println("Trouble reading from the file: " + ioe.getMessage());
                 }
                 
-              //checking if the file is writing and storing correctly.
-                
+               
+                               
+                /**
+                 *  //checking if the file is writing and storing correctly.
                 if (compressedFile.canRead()){
                     //System.out.println(compressedFile.length());
                     FileInputStream compressedFileStream = new FileInputStream(compressedFile);
@@ -248,6 +250,8 @@ public class HuffmanEncode
                     compressedFileStream.close();
 
                 }
+                
+                */
                 
                 headerByteStream.close();
             } catch (IOException ioe) {
@@ -480,7 +484,10 @@ public class HuffmanEncode
         }
     }
     
-    //Builds the Huffman Tree
+
+    /**
+     * Uses a priority queue to build the tree
+     */
     private void buildTree(){
         while (nodeQueue.size() > 1) 
         {
@@ -521,7 +528,11 @@ public class HuffmanEncode
         }
     }
     
-    // helper method to check byte tree
+    /**
+     * Display the tree sideways	
+     * @param root
+     * @param level
+     */
     private void printSideways(ByteNode root, int level) {
         if (root != null) {
             printSideways(root.right, level + 1);
@@ -552,10 +563,14 @@ public class HuffmanEncode
             traverser = traverser.substring(0, traverser.length()-1);
         }
     }
+
     
-    //private helper method to traverse the tree with leftOrderTraversal
-    private void leftOrderTraversal(CharNode root)
-    {
+    
+    /**
+     * Used to traverse through the tree with left order
+     * @param root
+     */
+    private void leftOrderTraversal(CharNode root) {
         
             if (root.right == null && root.left == null)
             {
