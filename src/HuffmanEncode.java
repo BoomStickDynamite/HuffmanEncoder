@@ -15,8 +15,7 @@ import java.util.*;
 public class HuffmanEncode
 {
     File theFile;
-    File compressedFile = new File("foxtext.hzip");
-    String stringInput;
+    File compressedFile;
     ArrayList<Character> characters = new ArrayList<Character>();
     PriorityQueue<CharNode> nodeQueue = new PriorityQueue<CharNode>();
     PriorityQueue<ByteNode> nodeByteQueue = new PriorityQueue<ByteNode>();
@@ -31,30 +30,31 @@ public class HuffmanEncode
     
     /**
      * Constructor for objects of class HuffmanEncode to start with a file
-     */
-    public HuffmanEncode(File input)
-    {
-        this.theFile = input;
-        compressedFile = new File(input.getName().split(".")[0] + ".gzip");
-    }
-    
-    /** Overloaded Constructor for String input
+     * also creates the gzip file from the input file name.
      * 
+     * @param File
      */
-    public HuffmanEncode (String fileName)
+    public HuffmanEncode (File input) throws FileNotFoundException
     {
-        this.stringInput = fileName;
+    	if (input != null) {
+            this.theFile = input;
+            String whatever = input.getName().substring(0, input.getName().indexOf("."));
+            compressedFile = new File(whatever + ".gzip");
+    	} else {
+    		throw new FileNotFoundException() {
+    			
+    		};
+    	}
     }
     
-    /**
-     * Reads the filename and creates a File Object which will be used in a FileInputStream.
-     * might need to do something here, the file was marked as thefile and I changed it to
-     * theFile and it had no effect which worries me.
-     * @throws FileNotFoundException
+    /** 
+     * Overloaded Constructor for String input
+     * @param String
      */
-    public void encodeByteStream() throws FileNotFoundException
+    public HuffmanEncode(String fileName)
     {
-        File theFile = new File(this.stringInput);
+    	this.theFile = new File (fileName);
+    	compressedFile = new File(fileName + ".gzip");
     }
     
     /**
