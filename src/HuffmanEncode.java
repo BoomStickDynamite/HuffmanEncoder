@@ -6,15 +6,14 @@ import java.util.*;
 
 
 /**
- * This program encodes a file given and decodes a compressed file as well.
+ * This program encodes a file given.
  * Uses the Huffman algorithm.
  * 
  * @author Grant Zukowski
- * @version 1.1
+ * @version 1.2
  */
 public class HuffmanEncode
 {
-    // instance variables
     File theFile;
     File compressedFile = new File("foxtext.hzip");
     String stringInput;
@@ -26,7 +25,6 @@ public class HuffmanEncode
     CharNode overallRoot;
     ByteNode overallByteRoot;
     String traverser = "";
-    
     ArrayList<Integer> byteArray = new ArrayList<Integer>();
     HashMap<Integer, Integer> myFirstMap = new HashMap<Integer, Integer>();
     HashMap<Integer, String> encodedBytesMap = new HashMap<Integer, String>();
@@ -37,6 +35,7 @@ public class HuffmanEncode
     public HuffmanEncode(File input)
     {
         this.theFile = input;
+        compressedFile = new File(input.getName().split(".")[0] + ".gzip");
     }
     
     /** Overloaded Constructor for String input
@@ -451,8 +450,9 @@ public class HuffmanEncode
     
     }
     
-    
-    // helper method for me to check my work.
+    /**
+     * helper method for me to check my work.
+     */
     private void checkUniques()
     {
         for (int i = 0; i < uniqueChars.size(); i ++ )
@@ -460,8 +460,9 @@ public class HuffmanEncode
             System.out.println(uniqueChars.get(i));
         }
     }
-    
-    // put the unique characters into an array
+    /**
+     * put the unique characters into an array
+     */
     private void uniqueToArrayList() 
     {
         for (int i = 0; i < characters.size(); i ++ )
@@ -473,8 +474,10 @@ public class HuffmanEncode
         }
     }
     
-    //Fills the Priority Queue with the nodes that you create 
-    //out of the characters and occurrences.
+    /**
+     * Fills the Priority Queue with the nodes that you create
+     * out of the characters and occurrences. 
+     */
     private void fillQueue()
     {
         for (int i = 0; i < uniqueChars.size(); i++) 
