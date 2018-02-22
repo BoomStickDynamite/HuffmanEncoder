@@ -34,21 +34,18 @@ public class HuffmanEncode
      * 
      * @param File
      */
-    public HuffmanEncode (File input) throws FileNotFoundException
+    public HuffmanEncode (File input)
     {
-    	if (input != null) {
-            this.theFile = input;
-            String whatever = input.getName().substring(0, input.getName().indexOf("."));
-            compressedFile = new File(whatever + ".gzip");
-    	} else {
-    		throw new FileNotFoundException() {
-    			
-    		};
-    	}
+    	
+        this.theFile = input;
+        String whatever = input.getName().substring(0, input.getName().indexOf("."));
+        compressedFile = new File(whatever + ".gzip");
+    	
+    	
     }
     
     /** 
-     * Overloaded Constructor for String input
+     * Constructor using String input
      * @param String
      */
     public HuffmanEncode(String fileName)
@@ -460,8 +457,10 @@ public class HuffmanEncode
             System.out.println(uniqueChars.get(i));
         }
     }
+    
+    
     /**
-     * put the unique characters into an array
+     * Helper method to put the unique characters into an array
      */
     private void uniqueToArrayList() 
     {
