@@ -55,6 +55,82 @@ public class HuffmanEncode
     }
     
     /**
+     * A method to encode a file
+     * Reads the File Object and counts the occurrence of every character 
+     * (including special characters like newline and blanks).
+     * 
+     */
+    public void encode()
+    {
+    	BufferedReader inputReader = null;
+    	
+    	//open the file
+    	try {
+    		//use side method so it throws the error
+    		//and I can explain here
+    		inputReader = createBufferedReader();
+    		System.out.println("file was opened!");
+    	} catch (FileNotFoundException e) {
+    		
+    		e.printStackTrace();
+    	}
+    	
+    	//read the file
+    	try {
+    		//use side method so it throws the error
+    		loadCharArray(inputReader);
+    		System.out.println("File read!");
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		System.out.println("File was opened, but data could not be read");
+    	}
+        
+        uniqueToArrayList();
+        //checkUniques();
+        fillQueue();
+        buildTree();
+        //printSideways(overallRoot, 0);
+        traverseHuffTree();
+    
+    }
+    
+    /**
+     * Method to create the fileReader to hide the error
+     * throwing from the user having to handle it
+     * @throws FileNotFoundException
+     */
+    private BufferedReader createBufferedReader() throws FileNotFoundException {
+    	BufferedReader inputReader = null;
+    	inputReader = new BufferedReader(new FileReader(theFile));
+    	return inputReader;
+    }
+    
+    /**
+     * Private method for reading the BufferedReader to load the 
+     * data from the file into an array
+     * @throws IOExceptiion
+     */
+    private void loadCharArray(BufferedReader inputReader) throws IOException {
+    	int readValue = 0;
+    	System.out.println("reading the file");
+
+    	//prime the while reading loop
+    	readValue = inputReader.read();
+    	
+        //add the first value and cast it as you add
+        characters.add((char)readValue);
+        
+        // Load the chars into the array
+        while (readValue != -1)
+        {
+            readValue = inputReader.read();
+            characters.add((char)readValue);
+        }
+        
+        inputReader.close();
+    }
+    
+    /**
      * Reads the FileInputStream and counts the occurrence of every byte.
      * Fills the Priority Queue with the nodes that you create out of the bytes and occurrences.
      * Builds the Huffman Tree
@@ -409,43 +485,6 @@ public class HuffmanEncode
     }
     
     
-    /**
-     * A method to encode a file
-     * 
-     * 
-     */
-    public void encode()
-    {
-        // Reads the File Object and counts the occurrence 
-        // of every character (including special characters like newline and blanks).
-        try 
-        {
-            
-            BufferedReader in = new BufferedReader(new FileReader(theFile));
-            int readValue = in.read();
-            characters.add((char)readValue);
-            
-            // Load the chars into the array
-            while (readValue != -1)
-            {
-                readValue = in.read();
-                characters.add((char)readValue);
-            }
-            in.close();
-
-        } 
-        catch (IOException FileNotFoundException)
-        { 
-            System.out.println("file not found");
-        }
-        uniqueToArrayList();
-        //checkUniques();
-        fillQueue();
-        buildTree();
-        //printSideways(overallRoot, 0);
-        traverseHuffTree();
-    
-    }
     
     /**
      * helper method for me to check my work.

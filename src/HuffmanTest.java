@@ -11,15 +11,14 @@ import java.io.*;
  * @author Julien Feis
  */
 public class HuffmanTest {
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws FileNotFoundException {
+   
+    public static void main(String[] args){
         //
         String testString = "foxtext.txt";
-        File testFile = new File("foxtext.txt");
+        File testFile = new File(testString);
         HuffmanEncode huffy = new HuffmanEncode(testFile);
         huffy.encode();
+        
         huffy.writeToFile(testString);
     }
 }
