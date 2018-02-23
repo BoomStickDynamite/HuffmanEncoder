@@ -14,11 +14,10 @@ public class HuffmanTest {
    
     public static void main(String[] args){
         //
-        String testString = "foxtext.txt";
-        File testFile = new File(testString);
+        String testString = "aGazillionSongs.txt";
+        File testFile = new File("aGazillionSongs.txt");
         HuffmanEncode huffy = new HuffmanEncode(testFile);
         huffy.encode();
-        
         huffy.writeToFile(testString);
     }
 }
