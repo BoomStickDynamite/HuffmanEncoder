@@ -15,13 +15,13 @@ public class HuffmanEncode {
 	private File compressedFile;
 	private ArrayList<Character> characters = new ArrayList<Character>();
 	private PriorityQueue<CharNode> nodeQueue = new PriorityQueue<CharNode>();
-	private PriorityQueue<ByteNode> nodeByteQueue = new PriorityQueue<ByteNode>();
+	
 	private ArrayList<Character> uniqueChars = new ArrayList<Character>();
 	private HashMap<Character, Integer> charMap = new HashMap<Character, Integer>();
 	private CharNode overallRoot;
-	private ByteNode overallByteRoot;
+
 	private String traverser = "";
-	private ArrayList<Integer> byteArray = new ArrayList<Integer>();
+	
 	private HashMap<Integer, Integer> myFirstMap = new HashMap<Integer, Integer>();
 	private HashMap<Integer, String> encodedBytesMap = new HashMap<Integer, String>();
 
@@ -52,7 +52,7 @@ public class HuffmanEncode {
 	/**
 	 * A method to encode a file Reads the File Object and counts the occurrence of
 	 * every character (including special characters like newline and blanks).
-	 * 
+	 * Use is just to create a tree with values and frequencies
 	 */
 	public void encode() {
 		BufferedReader inputReader = null;
@@ -150,76 +150,6 @@ public class HuffmanEncode {
 
 		return newContainer;
 
-	}
-
-	// Builds the Huffman Tree for ByteNodes
-	
-	/**
-	 * Use the Priority Queue of ByteNodes to create the
-	 * tree with frequency and letters at the leaves
-	 * of the tree so they can be read in based on right left turns
-	 * to get there.
-	 */
-	private void buildByteTree() {
-		while (nodeByteQueue.size() > 1) {
-			ByteNode newParent = new ByteNode();
-			newParent.left = nodeByteQueue.poll();
-			newParent.right = nodeByteQueue.poll();
-			newParent.frequency = newParent.right.frequency + newParent.left.frequency;
-			nodeByteQueue.add(newParent);
-		}
-		if (nodeByteQueue.size() == 1) {
-			overallByteRoot = nodeByteQueue.poll();
-		}
-	}
-	
-	/**
-	 * Private class to handle byteNodes
-	 * @author grant
-	 *
-	 */
-	private class ByteNode implements Comparable<ByteNode> {
-		ByteNode right;
-		ByteNode left;
-		int frequency;
-		int byteData;
-
-		public ByteNode() {
-			this.right = null;
-			this.left = null;
-			this.frequency = 0;
-		}
-
-		public ByteNode(int frequency, int byteData) {
-			this.frequency = frequency;
-			this.byteData = byteData;
-		}
-
-		public ByteNode(int frequency, ByteNode left, ByteNode right) {
-			this.frequency = frequency;
-			this.left = left;
-			this.right = right;
-		}
-
-		public int compareTo(ByteNode other) {
-			int answer = 0;
-			if (this.frequency == other.frequency) {
-				answer = 0;
-			} else if (this.frequency > other.frequency) {
-				answer = 1;
-			} else if (this.frequency < other.frequency) {
-				answer = -1;
-			}
-			return answer;
-		}
-
-		public boolean equals(ByteNode other) {
-			if (this.frequency == other.frequency && this.byteData == other.byteData) {
-				return true;
-			} else {
-				return false;
-			}
-		}
 	}
 
 	/**
@@ -326,13 +256,6 @@ public class HuffmanEncode {
 		leftOrderTraversal(overallRoot);
 	}
 
-	// Traverses the Huffman Tree
-	private void traverseByteHuffTree() {
-		leftOrderTraversal(overallByteRoot);
-	}
-
-	
-	
 	/**
 	 * Reads the FileInputStream and counts the occurrence of every byte. Fills the
 	 * Priority Queue with the nodes that you create out of the bytes and
@@ -341,24 +264,23 @@ public class HuffmanEncode {
 	public void writeToFile(String fileName) {
 
 		int currentData;
+		ArrayList<Integer> byteArray = new ArrayList<Integer>();
+		
 		try {
 
 			FileInputStream inputStream = new FileInputStream(theFile);
 			while (inputStream.available() > 0) {
 				currentData = inputStream.read();
-				// System.out.println(currentData);
-				// System.out.println(Integer.toBinaryString(inputStream.read()));
 				byteArray.add(currentData);
 			}
 			inputStream.close();
+			
 		} catch (IOException ioe) {
+			
 			System.out.println("Trouble reading from the file: " + ioe.getMessage());
 		}
 
-		// printing out byteArray to make sure its filled
-		// for (int i = 0; i < byteArray.size();i++){
-		// System.out.println(Integer.toBinaryString(byteArray.get(i)));
-		// }
+
 		// putting bytes into a hashmap based in the char as the key and frequency as
 		// the value
 		for (int i = 0; i < byteArray.size(); i++) {
@@ -370,12 +292,12 @@ public class HuffmanEncode {
 			// System.out.println(myFirstMap);
 		}
 		// myFirstMap.forEach((k,v) -> System.out.println(k + "=" + v));
-		myFirstMap.forEach((k, v) -> nodeByteQueue.add(new ByteNode(v, k)));
+		//myFirstMap.forEach((k, v) -> nodeByteQueue.add(new ByteNode(v, k)));
 		// System.out.println(nodeByteQueue.peek().frequency + "=" +
 		// nodeByteQueue.peek().byteData);
-		buildByteTree();
+		//buildByteTree();
 		// printSideways(overallByteRoot, 0);
-		traverseByteHuffTree();
+		//traverseByteHuffTree();
 
 		// encodedBytesMap.forEach((k,v) -> System.out.println(k + "=" + v));
 
@@ -391,6 +313,9 @@ public class HuffmanEncode {
 		// System.out.println(numberOfSymbols);
 		// numberOfBytes
 		// byte(s) codeBits;
+		
+		
+		
 		try {
 			FileOutputStream headerByteStream = new FileOutputStream(compressedFile);
 			// System.out.println(wrapperNumberOfBytes.byteValue());
@@ -470,52 +395,6 @@ public class HuffmanEncode {
 					System.out.println("Trouble reading from the file: " + ioe.getMessage());
 				}
 
-				/**
-				 * //checking if the file is writing and storing correctly. if
-				 * (compressedFile.canRead()){ //System.out.println(compressedFile.length());
-				 * FileInputStream compressedFileStream = new FileInputStream(compressedFile);
-				 * 
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println((char)(compressedFileStream.read()));
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(Integer.toBinaryString(compressedFileStream.read()));
-				 * 
-				 * System.out.println((char)(compressedFileStream.read()));
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(Integer.toBinaryString(compressedFileStream.read()));
-				 * 
-				 * System.out.println((char)(compressedFileStream.read()));
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(Integer.toBinaryString(compressedFileStream.read()));
-				 * 
-				 * System.out.println((char)(compressedFileStream.read()));
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(Integer.toBinaryString(compressedFileStream.read()));
-				 * 
-				 * System.out.println((char)(compressedFileStream.read()));
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(Integer.toBinaryString(compressedFileStream.read()));
-				 * 
-				 * System.out.println((char)(compressedFileStream.read()));
-				 * System.out.println(compressedFileStream.read());
-				 * System.out.println(Integer.toBinaryString(compressedFileStream.read()));
-				 * 
-				 * compressedFileStream.close();
-				 * 
-				 * }
-				 * 
-				 */
 
 				headerByteStream.close();
 			} catch (IOException ioe) {
@@ -525,11 +404,6 @@ public class HuffmanEncode {
 		} catch (FileNotFoundException fnfe) {
 			System.out.println("No File to write to: " + fnfe.getMessage());
 		}
-		// System.out.println();
-		// int bytesOfLongTest = numberOfBytes.byteValue();
-		// System.out.println(wrapperNumberOfBytes.byteValue());
-		// headerByteStream.write(wrapperNumberOfBytes.byteValue());
-		
 
 	}
 
@@ -545,39 +419,7 @@ public class HuffmanEncode {
 		}
 	}
 
-	/**
-	 * Display the tree sideways
-	 * 
-	 * @param root
-	 * @param level
-	 */
-	private void printSideways(ByteNode root, int level) {
-		if (root != null) {
-			printSideways(root.right, level + 1);
-			for (int i = 0; i < level; i++) {
-				System.out.print("    ");
-			}
-			System.out.println(root.frequency + " " + root.byteData);
-			printSideways(root.left, level + 1);
-		}
-	}
-
-	// private traversing method for ByteNode trees
-	private void leftOrderTraversal(ByteNode root) {
-		if (root.right == null && root.left == null) {
-			// System.out.println(root.byteData + " " + traverser + " " + root.frequency);
-			encodedBytesMap.put(root.byteData, traverser);
-		} else if (root != null) {
-			traverser += "0";
-			leftOrderTraversal(root.left);
-			traverser = traverser.substring(0, traverser.length() - 1);
-
-			traverser += "1";
-			leftOrderTraversal(root.right);
-			traverser = traverser.substring(0, traverser.length() - 1);
-		}
-	}
-
+	
 	/**
 	 * Used to traverse through the tree with left order
 	 * 
