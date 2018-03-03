@@ -399,7 +399,7 @@ public class HuffmanEncode {
 				String encodedValueAsString = encodedCharacterMap.get((char) inputData);
 				
 				//Picking up here, going to fill up the bytes and write them when they equal 8
-				// using a pointer for index
+				// using a pointer for index, update
 				
 				if (encodedValueAsString.length() > 9) {
 					encodedByte = encodedValueAsString.getBytes();
