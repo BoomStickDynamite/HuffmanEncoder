@@ -18,6 +18,6 @@ public class HuffmanTest {
         File testFile = new File("aGazillionSongs.txt");
         HuffmanEncode huffy = new HuffmanEncode(testFile);
         huffy.encode();
-        //huffy.writeToFile(testString);
+        huffy.writeToFile(testString);
     }
 }

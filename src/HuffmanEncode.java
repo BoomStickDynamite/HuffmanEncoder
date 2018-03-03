@@ -90,8 +90,9 @@ public class HuffmanEncode {
 		//Method to check if the tree was constructed correctly
 		printSideways(overallRoot, 0);
 		
-		//Not sure why this is getting called here
-		//traverseHuffTree();
+		//Call this here to fill up the hashmap of the character and new encoding
+		//value if you choose to write the bits using a hash.
+		traverseHuffTree();
 
 	}
 
@@ -231,6 +232,7 @@ public class HuffmanEncode {
 	private void fillQueue() {
 		for (int i = 0; i < uniqueChars.size(); i++) {
 			CharNode newNode = new CharNode(Collections.frequency(characters, uniqueChars.get(i)), uniqueChars.get(i));
+			charMap.put(uniqueChars.get(i), Collections.frequency(characters, uniqueChars.get(i)));
 			nodeQueue.add(newNode);
 		}
 	}
@@ -251,7 +253,11 @@ public class HuffmanEncode {
 		}
 	}
 
-	// Traverses the Huffman Tree
+	/**
+	 * Wrapper method to call a traversal on the tree's leaves.
+	 * so I can fill the map with values //Perhaps the values are being set incorrectly 
+	 * by "traverser string"
+	 */
 	private void traverseHuffTree() {
 		leftOrderTraversal(overallRoot);
 	}
@@ -276,7 +282,7 @@ public class HuffmanEncode {
 		
 		//going to write the bits while I traverse the tree so when I'm writing the byte
 		//and have to go to the next, I just leave the pointer in place and keep traversing
-		//becuase I think this will be faster than dealing with bit shifting
+		//because I think this will be faster than dealing with bit shifting
 		
 		
 		
@@ -297,7 +303,8 @@ public class HuffmanEncode {
 			System.out.println(e.getMessage());
 		}
 		
-	
+		
+		
 		// Create the long value as bytes
 		ByteBuffer myLongByteBuffer = ByteBuffer.allocate(8);
 		myLongByteBuffer.putLong(numberOfBytes);
@@ -319,11 +326,19 @@ public class HuffmanEncode {
 		
 		try {
 		
-		headerByteStream.write(theIntArray);
-
+			headerByteStream.write(theIntArray);
+		
 			// write the actual Huffman value to bytes and shift over to the left
 			// if there are between 8 and bits, then take the first 8 and shift the
 			// rest over in the next byte. Possibly will add more up to 64 later.
+		
+			// This seems to add bytes to the header to be written so I have the 
+			// map when I decode.
+			
+			// I"m leaving this for now because this is all the header and the main
+			// part that I want to do is not done anyways, but I will have to remember to 
+			// populate the encodedBytesMap in the traversal
+		
 			for (Map.Entry<Integer, String> entry : encodedBytesMap.entrySet()) {
 				headerByteStream.write(entry.getKey());
 				headerByteStream.write(entry.getValue().length());
@@ -360,21 +375,33 @@ public class HuffmanEncode {
 
 		// System.out.println(wrapperNumberOfBytes.byteValue());
 		// System.out.println(wrapperNumberOfBytes.BYTES);
-
-		// helper code to shove bits into complete bytes before adding them.
+		
+		// Grab each character of the input file
+		
 		int inputData;
 		try {
 
 			FileInputStream inputStream = new FileInputStream(theFile);
 			while (inputStream.available() > 0) {
 				inputData = inputStream.read();
+				
+				// Smallest unit I can write is byte
+				byte encodedByte;
+				
+				// Get frequency so I can use it to traverse tree
+				int frequency = charMap.get((char) inputData);
+				
+				// Set byte as I turn left and right
+				// +_________________-----------Left off here
+				
+				
+				//System.out.println((char) inputData);
+				
 				// System.out.println(currentData);
 				// System.out.println(Integer.toBinaryString(inputStream.read()));
-				String huffCode = encodedBytesMap.get(inputData);
+				//String huffCode = encodedBytesMap.get(inputData);
 
-				// |-----------------This is where you left off. Going to put the bits
-				// for each code next to each other ----------|
-
+			
 				// headerByteStream.write();
 			}
 			inputStream.close();
@@ -392,9 +419,12 @@ public class HuffmanEncode {
 	}
 
 
-	
-
-	// helper method to check tree
+	/**
+	 * Useful for getting a sideways visual representation
+	 * of the tree, leaves are the characters.
+	 * @param root
+	 * @param level
+	 */
 	private void printSideways(CharNode root, int level) {
 		if (root != null) {
 			printSideways(root.right, level + 1);
@@ -408,7 +438,10 @@ public class HuffmanEncode {
 
 	
 	/**
-	 * Used to traverse through the tree with left order
+	 * Used to traverse through the tree leaves with left order
+	 * traversal
+	 * 
+	 * May use this method to set up a map of characters and their encoding
 	 * 
 	 * @param root
 	 */
@@ -416,6 +449,8 @@ public class HuffmanEncode {
 
 		if (root.right == null && root.left == null) {
 			System.out.println(root.character + " " + traverser + " " + root.frequency);
+			//if going to put in map I would do here.
+			
 		} else if (root != null) {
 			traverser += "0";
 			leftOrderTraversal(root.left);
