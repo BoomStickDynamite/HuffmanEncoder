@@ -264,148 +264,135 @@ public class HuffmanEncode {
 	public void writeToFile(String fileName) {
 
 		int currentData;
-		ArrayList<Integer> byteArray = new ArrayList<Integer>();
 		
+		//Write the header to be able to re-construct the tree later
+		//something that I can call buildTree on, so all the components of that
+		//May just convert the entire structure to bytes, and write it that way
+		//honestly still not positive on this part, just know the tree will be very useful
+		//for decoding the byte stream.
+		
+		//Data needed for the tree
+		
+		
+		//going to write the bits while I traverse the tree so when I'm writing the byte
+		//and have to go to the next, I just leave the pointer in place and keep traversing
+		//becuase I think this will be faster than dealing with bit shifting
+		
+		
+		
+		//get these from the map
+		int numberOfBytes = 0;
+		int numberOfSymbols = 0;
+		
+		
+		
+		
+		FileOutputStream headerByteStream = null;
+		
+		try {
+
+			headerByteStream = new FileOutputStream(compressedFile);
+			// System.out.println(wrapperNumberOfBytes.byteValue());
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
+		
+	
+		// Create the long value as bytes
+		ByteBuffer myLongByteBuffer = ByteBuffer.allocate(8);
+		myLongByteBuffer.putLong(numberOfBytes);
+		// System.out.println(myByteBuffer.toString());
+		byte[] theLongArray = myLongByteBuffer.array();
+		// System.out.println(wrapperNumberOfBytes.BYTES);
+		
+		try {
+			headerByteStream.write(theLongArray);
+		} catch (IOException e) {
+			System.out.println("Sorry, could not write to the header byte stream,\n perhaps ");
+			System.out.println(e.getMessage());
+		}
+		// Create the int value as 4 bytes
+		ByteBuffer myIntByteBuffer = ByteBuffer.allocate(4);
+		myIntByteBuffer.putInt(numberOfSymbols);
+		// System.out.println(myByteBuffer.toString());
+		byte[] theIntArray = myIntByteBuffer.array();
+		
+		try {
+		
+		headerByteStream.write(theIntArray);
+
+			// write the actual Huffman value to bytes and shift over to the left
+			// if there are between 8 and bits, then take the first 8 and shift the
+			// rest over in the next byte. Possibly will add more up to 64 later.
+			for (Map.Entry<Integer, String> entry : encodedBytesMap.entrySet()) {
+				headerByteStream.write(entry.getKey());
+				headerByteStream.write(entry.getValue().length());
+				// check if there are more than 8 bits
+				if (entry.getValue().length() <= 8) {
+					byte answer;
+					Byte theValue = Byte.parseByte(entry.getValue(), 2);
+					// System.out.println(entry.getValue());
+					answer = (byte) (theValue << (8 - entry.getValue().length()));
+					headerByteStream.write(answer);
+				} else if (entry.getValue().length() > 8 && entry.getValue().length() >= 16) {
+					byte answer1;
+					byte answer2;
+					Byte theValue1 = Byte.parseByte(entry.getValue().substring(0, 8), 2);
+					Byte theValue2 = Byte.parseByte(entry.getValue().substring(9, (entry.getValue().length() - 8)),
+							2);
+					// System.out.println(entry.getValue());
+					answer1 = (byte) (theValue1);
+					answer2 = (byte) (theValue2 << (8 - (entry.getValue().length() - 8)));
+					headerByteStream.write(answer1);
+					headerByteStream.write(answer2);
+					// add in code here later that makes a substring and keeps processing it until
+					// its gone I guess.
+					System.out.println("testing a huff code that is longer than 8 bits");
+				}
+				// System.out.printf("Key : %s and Value: %s %n", entry.getKey(),
+				// entry.getValue());
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		// |------------------Done with Header-----------------------------|
+
+		// System.out.println(wrapperNumberOfBytes.byteValue());
+		// System.out.println(wrapperNumberOfBytes.BYTES);
+
+		// helper code to shove bits into complete bytes before adding them.
+		int inputData;
 		try {
 
 			FileInputStream inputStream = new FileInputStream(theFile);
 			while (inputStream.available() > 0) {
-				currentData = inputStream.read();
-				byteArray.add(currentData);
+				inputData = inputStream.read();
+				// System.out.println(currentData);
+				// System.out.println(Integer.toBinaryString(inputStream.read()));
+				String huffCode = encodedBytesMap.get(inputData);
+
+				// |-----------------This is where you left off. Going to put the bits
+				// for each code next to each other ----------|
+
+				// headerByteStream.write();
 			}
 			inputStream.close();
-			
 		} catch (IOException ioe) {
-			
 			System.out.println("Trouble reading from the file: " + ioe.getMessage());
 		}
 
 
-		// putting bytes into a hashmap based in the char as the key and frequency as
-		// the value
-		for (int i = 0; i < byteArray.size(); i++) {
-			if (!myFirstMap.containsKey(byteArray.get(i))) {
-				myFirstMap.put(byteArray.get(i), Collections.frequency(byteArray, byteArray.get(i)));
-				// System.out.println( byteArray.get(i) + " " +
-				// myFirstMap.get(byteArray.get(i)));
-			}
-			// System.out.println(myFirstMap);
-		}
-		// myFirstMap.forEach((k,v) -> System.out.println(k + "=" + v));
-		//myFirstMap.forEach((k, v) -> nodeByteQueue.add(new ByteNode(v, k)));
-		// System.out.println(nodeByteQueue.peek().frequency + "=" +
-		// nodeByteQueue.peek().byteData);
-		//buildByteTree();
-		// printSideways(overallByteRoot, 0);
-		//traverseByteHuffTree();
-
-		// encodedBytesMap.forEach((k,v) -> System.out.println(k + "=" + v));
-
-		// write the huffcode tree bytes to file
-
-		// set number of bytes to the file length of bytes
-		long numberOfBytes = theFile.length();
-
-		// System.out.println(wrapperNumberOfBytes.BYTES);
-		int numberOfSymbols = myFirstMap.size();
-
-		// System.out.println(wrapperNumberOfBytes);
-		// System.out.println(numberOfSymbols);
-		// numberOfBytes
-		// byte(s) codeBits;
-		
-		
-		
 		try {
-			FileOutputStream headerByteStream = new FileOutputStream(compressedFile);
-			// System.out.println(wrapperNumberOfBytes.byteValue());
-			try {
-
-				// Create the long value as bytes
-				ByteBuffer myLongByteBuffer = ByteBuffer.allocate(8);
-				myLongByteBuffer.putLong(numberOfBytes);
-				// System.out.println(myByteBuffer.toString());
-				byte[] theLongArray = myLongByteBuffer.array();
-				// System.out.println(wrapperNumberOfBytes.BYTES);
-				headerByteStream.write(theLongArray);
-
-				// Create the int value as 4 bytes
-				ByteBuffer myIntByteBuffer = ByteBuffer.allocate(4);
-				myIntByteBuffer.putInt(numberOfSymbols);
-				// System.out.println(myByteBuffer.toString());
-				byte[] theIntArray = myIntByteBuffer.array();
-
-				headerByteStream.write(theIntArray);
-
-				// write the actual Huffman value to bytes and shift over to the left
-				// if there are between 8 and bits, then take the first 8 and shift the
-				// rest over in the next byte. Possibly will add more up to 64 later.
-				for (Map.Entry<Integer, String> entry : encodedBytesMap.entrySet()) {
-					headerByteStream.write(entry.getKey());
-					headerByteStream.write(entry.getValue().length());
-					// check if there are more than 8 bits
-					if (entry.getValue().length() <= 8) {
-						byte answer;
-						Byte theValue = Byte.parseByte(entry.getValue(), 2);
-						// System.out.println(entry.getValue());
-						answer = (byte) (theValue << (8 - entry.getValue().length()));
-						headerByteStream.write(answer);
-					} else if (entry.getValue().length() > 8 && entry.getValue().length() >= 16) {
-						byte answer1;
-						byte answer2;
-						Byte theValue1 = Byte.parseByte(entry.getValue().substring(0, 8), 2);
-						Byte theValue2 = Byte.parseByte(entry.getValue().substring(9, (entry.getValue().length() - 8)),
-								2);
-						// System.out.println(entry.getValue());
-						answer1 = (byte) (theValue1);
-						answer2 = (byte) (theValue2 << (8 - (entry.getValue().length() - 8)));
-						headerByteStream.write(answer1);
-						headerByteStream.write(answer2);
-						// add in code here later that makes a substring and keeps processing it until
-						// its gone I guess.
-						System.out.println("testing a huff code that is longer than 8 bits");
-					}
-					// System.out.printf("Key : %s and Value: %s %n", entry.getKey(),
-					// entry.getValue());
-				}
-
-				// |------------------Done with Header-----------------------------|
-
-				// System.out.println(wrapperNumberOfBytes.byteValue());
-				// System.out.println(wrapperNumberOfBytes.BYTES);
-
-				// helper code to shove bits into complete bytes before adding them.
-				int inputData;
-				try {
-
-					FileInputStream inputStream = new FileInputStream(theFile);
-					while (inputStream.available() > 0) {
-						inputData = inputStream.read();
-						// System.out.println(currentData);
-						// System.out.println(Integer.toBinaryString(inputStream.read()));
-						String huffCode = encodedBytesMap.get(inputData);
-
-						// |-----------------This is where you left off. Going to put the bits
-						// for each code next to each other ----------|
-
-						// headerByteStream.write();
-					}
-					inputStream.close();
-				} catch (IOException ioe) {
-					System.out.println("Trouble reading from the file: " + ioe.getMessage());
-				}
-
-
-				headerByteStream.close();
-			} catch (IOException ioe) {
-				System.out.println("Trouble writing to the output byte stream" + ioe.getMessage());
-			}
-
-		} catch (FileNotFoundException fnfe) {
-			System.out.println("No File to write to: " + fnfe.getMessage());
+			headerByteStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
 	}
+
+
+	
 
 	// helper method to check tree
 	private void printSideways(CharNode root, int level) {
