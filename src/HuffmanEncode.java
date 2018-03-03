@@ -386,14 +386,34 @@ public class HuffmanEncode {
 				inputData = inputStream.read();
 				
 				// Smallest unit I can write is byte
-				byte encodedByte;
+				byte encodedByte = 00000000;
+				int counter = 0;
 				
 				// Get frequency so I can use it to traverse tree
 				int frequency = charMap.get((char) inputData);
 				
+				
+				
+				
 				// Set byte as I turn left and right
 				// +_________________-----------Left off here
+				// This idea may not work because its hard to navigate to 
+				// the leaf with the frequency, I don't see the pattern
+				// unless my tree is incorrectly constructed.
 				
+				CharNode pointer = overallRoot;
+				
+				
+				if (pointer.right == null && pointer.left == null) {
+					pointer = overallRoot;
+				}
+				else if (pointer.right.frequency > frequency) {
+					pointer = pointer.right;
+					encodedByte = (byte) (encodedByte | (0 << counter));
+					counter += 1;
+				} else if (pointer.right.frequency > frequency) {
+					
+				}
 				
 				//System.out.println((char) inputData);
 				
@@ -401,8 +421,10 @@ public class HuffmanEncode {
 				// System.out.println(Integer.toBinaryString(inputStream.read()));
 				//String huffCode = encodedBytesMap.get(inputData);
 
-			
-				// headerByteStream.write();
+				if (counter == 8) {
+
+					headerByteStream.write(encodedByte);
+				}
 			}
 			inputStream.close();
 		} catch (IOException ioe) {
