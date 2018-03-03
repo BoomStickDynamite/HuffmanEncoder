@@ -14,16 +14,18 @@ public class HuffmanEncode {
 	private File theFile;
 	private File compressedFile;
 	private ArrayList<Character> characters = new ArrayList<Character>();
+	private ArrayList<Character> uniqueChars = new ArrayList<Character>();
+	
 	private PriorityQueue<CharNode> nodeQueue = new PriorityQueue<CharNode>();
 	
-	private ArrayList<Character> uniqueChars = new ArrayList<Character>();
-	private HashMap<Character, Integer> charMap = new HashMap<Character, Integer>();
+	
+	private HashMap<Character, Integer> charFrequencyMap = new HashMap<Character, Integer>();
 	private CharNode overallRoot;
 
 	private String traverser = "";
 	
 	private HashMap<Integer, Integer> myFirstMap = new HashMap<Integer, Integer>();
-	private HashMap<Integer, String> encodedBytesMap = new HashMap<Integer, String>();
+	private HashMap<Character, String> encodedCharacterMap = new HashMap<Character, String>();
 
 	/**
 	 * Constructor for objects of class HuffmanEncode to start with a file also
@@ -232,7 +234,7 @@ public class HuffmanEncode {
 	private void fillQueue() {
 		for (int i = 0; i < uniqueChars.size(); i++) {
 			CharNode newNode = new CharNode(Collections.frequency(characters, uniqueChars.get(i)), uniqueChars.get(i));
-			charMap.put(uniqueChars.get(i), Collections.frequency(characters, uniqueChars.get(i)));
+			charFrequencyMap.put(uniqueChars.get(i), Collections.frequency(characters, uniqueChars.get(i)));
 			nodeQueue.add(newNode);
 		}
 	}
@@ -338,7 +340,8 @@ public class HuffmanEncode {
 			// I"m leaving this for now because this is all the header and the main
 			// part that I want to do is not done anyways, but I will have to remember to 
 			// populate the encodedBytesMap in the traversal
-		
+			
+			/**
 			for (Map.Entry<Integer, String> entry : encodedBytesMap.entrySet()) {
 				headerByteStream.write(entry.getKey());
 				headerByteStream.write(entry.getValue().length());
@@ -367,6 +370,7 @@ public class HuffmanEncode {
 				// System.out.printf("Key : %s and Value: %s %n", entry.getKey(),
 				// entry.getValue());
 			}
+			*/
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -386,34 +390,30 @@ public class HuffmanEncode {
 				inputData = inputStream.read();
 				
 				// Smallest unit I can write is byte
-				byte encodedByte = 00000000;
+				byte[] encodedByte = {0,0,0,0,0,0,0,0};
 				int counter = 0;
 				
 				// Get frequency so I can use it to traverse tree
-				int frequency = charMap.get((char) inputData);
+				int frequency = charFrequencyMap.get((char) inputData);
 				
+				String encodedValueAsString = encodedCharacterMap.get((char) inputData);
 				
+				//Picking up here, going to fill up the bytes and write them when they equal 8
+				// using a pointer for index
 				
+				if (encodedValueAsString.length() > 9) {
+					encodedByte = encodedValueAsString.getBytes();
+				}
 				
 				// Set byte as I turn left and right
 				// +_________________-----------Left off here
 				// This idea may not work because its hard to navigate to 
 				// the leaf with the frequency, I don't see the pattern
-				// unless my tree is incorrectly constructed.
+				// unless my tree is incorrectly constructed. Won't work because
+				// can't tell the difference between two characters with same frequency
 				
-				CharNode pointer = overallRoot;
+				// Now I have a map of the encoded values. 
 				
-				
-				if (pointer.right == null && pointer.left == null) {
-					pointer = overallRoot;
-				}
-				else if (pointer.right.frequency > frequency) {
-					pointer = pointer.right;
-					encodedByte = (byte) (encodedByte | (0 << counter));
-					counter += 1;
-				} else if (pointer.right.frequency > frequency) {
-					
-				}
 				
 				//System.out.println((char) inputData);
 				
@@ -438,6 +438,32 @@ public class HuffmanEncode {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Useful for decoding and encoded file
+	 */
+	
+	public void decode() {
+		
+		/**
+		 * May use this code for the decode
+		 * 
+		 * CharNode pointer = overallRoot;
+		
+		
+		if (pointer.right == null && pointer.left == null) {
+			pointer = overallRoot;
+		}
+		else if (pointer.right.frequency > frequency) {
+			pointer = pointer.right;
+			encodedByte = (byte) (encodedByte | (0 << counter));
+			counter += 1;
+		} else if (pointer.right.frequency > frequency) {
+			
+		}
+		 */
+		
 	}
 
 
@@ -471,7 +497,8 @@ public class HuffmanEncode {
 
 		if (root.right == null && root.left == null) {
 			System.out.println(root.character + " " + traverser + " " + root.frequency);
-			//if going to put in map I would do here.
+			// So I can use these values later to write the encoded file
+			encodedCharacterMap.put(root.character, traverser);
 			
 		} else if (root != null) {
 			traverser += "0";
